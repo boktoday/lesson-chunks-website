@@ -1,0 +1,26 @@
+# Lesson Chunks Agent
+
+> A free Hermes agent profile that turns lessons into accessible chunks, builds an interactive single-file lesson, and schedules spaced delivery in chat before a test.
+
+The agent edition of the Lesson Chunks AI app. It runs on the family's or teacher's own machine, keeps every source document and answer on disk, and works local-first with the option of frontier models online.
+
+## What it does
+
+- Ingests any lesson source: pasted text, a photo, a PDF or a Word document.
+- Plans 5 to 12 chunks, one idea each, in an order that builds.
+- Writes each chunk to a strict format spec: 90 words maximum, 15-word sentences, one task per chunk, reading level year 8.
+- Gates every lesson through ten automated quality checks before anything is built.
+- Builds one self-contained lesson.html with chunk navigation, a timer, read-aloud, autosaving answers and clean printing.
+- Schedules spaced delivery in Telegram (or WhatsApp where connected): one chunk per message, recall questions from earlier chunks, and a five-question sweep before the test.
+
+## Links
+
+- Agent repository and download: https://github.com/boktoday/lesson-chunks-hermes-agent
+- Live example, no install: https://boktoday.github.io/lesson-chunks-hermes-agent/demo/lesson.html
+- Human help, workshops and setup: https://lessonchunks.distinctoapps.com/hire.html
+
+## Free
+
+The agent is free under the PolyForm Noncommercial licence: families, schools, churches and personal use, with credit. The paid part is Brendan's time: setup, training, and building agents for specific needs.
+
+Contact: brendan@aichampion.com.au, +61 490 393 533. The AI Champion, ABN 60 118 175 136.
