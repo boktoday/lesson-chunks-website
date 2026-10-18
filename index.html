@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson Chunks Agent - free AI agent for accessible lessons</title>
+<meta name="description" content="A free Hermes agent that turns any lesson into small, accessible chunks, builds an interactive lesson file that works offline, and can drip-feed the chunks before a test.">
+<link rel="canonical" href="https://lessonchunks.distinctoapps.com/">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Lesson Chunks Agent">
+<meta property="og:description" content="Free AI agent that turns lessons into small steps, builds an offline lesson file, and delivers the chunks before the test.">
+<meta property="og:url" content="https://lessonchunks.distinctoapps.com/">
+<meta property="og:image" content="https://lessonchunks.distinctoapps.com/assets/og-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<script defer src="https://assets.onedollarstats.com/stonks.js"></script>
+<style>
+  :root{
+    --paper:#f3f2ee; --card:#fffdfa; --ink:#22251f; --ink-soft:#5d635a;
+    --line:#dcdcd2; --grey:#e9e9e1;
+    --green:#2e7d5b; --green-deep:#1c5540; --green-soft:#e6f2ea;
+    --pink:#e78fae; --pink-deep:#b03d64; --pink-soft:#fbe9ef;
+    --serif:'Newsreader', Georgia, serif; --sans:'Inter', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:17px; line-height:1.6;}
+  a{color:var(--green-deep); text-decoration:none;}
+  a:hover{text-decoration:underline; text-underline-offset:3px;}
+  .wrap{max-width:1060px; margin:0 auto; padding-left:24px; padding-right:24px;}
+  h1,h2,h3{font-family:var(--serif); font-weight:600; line-height:1.12; letter-spacing:-0.01em;}
+  .kicker{display:inline-block; font-size:12px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--pink-deep); background:var(--pink-soft); padding:6px 12px; margin-bottom:18px;}
+  .btn{display:inline-block; background:var(--green); color:#fff; font-weight:600; font-size:16px; padding:13px 22px; border:2px solid var(--green); border-radius:0;}
+  .btn:hover{background:var(--green-deep); border-color:var(--green-deep); text-decoration:none;}
+  .btn.ghost{background:transparent; color:var(--green-deep); border-color:var(--green-deep);}
+  .btn.ghost:hover{background:var(--green-deep); color:#fff;}
+
+  header.site{position:sticky; top:0; z-index:50; background:rgba(243,242,238,.95); backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
+  .navbar{display:flex; align-items:center; justify-content:space-between; padding-top:14px; padding-bottom:14px;}
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--serif); font-size:23px; font-weight:600; color:var(--green-deep);}
+  .brand svg{width:30px; height:30px;}
+  nav.main{display:flex; gap:26px; font-size:15px; font-weight:500;}
+  nav.main a{color:var(--ink-soft);}
+  nav.main a:hover{color:var(--green-deep); text-decoration:none;}
+  .burger{display:none; width:44px; height:44px; background:none; border:1px solid var(--line); cursor:pointer; padding:10px;}
+  .burger span{display:block; height:2px; background:var(--ink); margin:5px 0; transition:transform .2s, opacity .2s;}
+  .menu{display:none;}
+
+  .hero{padding:64px 0 56px; background:linear-gradient(165deg, var(--green-soft) 0%, var(--paper) 46%, var(--pink-soft) 100%); border-bottom:1px solid var(--line);}
+  .hero-grid{display:grid; grid-template-columns:1.05fr .95fr; gap:44px; align-items:center;}
+  .hero h1{font-size:clamp(38px, 5.4vw, 62px); margin-bottom:18px;}
+  .hero .lede{font-size:19px; color:var(--ink-soft); max-width:46ch; margin-bottom:26px;}
+  .cta{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:16px;}
+  .freerow{font-size:14.5px; color:var(--ink-soft);}
+  .freerow b{color:var(--green-deep);}
+  .hero-art{max-width:470px; justify-self:end;}
+  .hero-art svg{display:block; width:100%; height:auto;}
+
+  section{padding:74px 0;}
+  section.alt{background:var(--card); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  h2{font-size:clamp(28px, 3.6vw, 40px); margin-bottom:14px;}
+  .sub{font-size:17.5px; color:var(--ink-soft); max-width:62ch; margin-bottom:34px;}
+
+  .steps{display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;}
+  .step{background:var(--card); border:1.5px solid var(--line); padding:22px 20px;}
+  .step .no{font-family:var(--serif); font-size:15px; color:var(--pink-deep); letter-spacing:.08em;}
+  .step h3{font-size:20px; margin:6px 0 8px;}
+  .step p{font-size:14.5px; color:var(--ink-soft);}
+  .step:nth-child(3n+1){border-top:3px solid var(--green);}
+  .step:nth-child(3n+2){border-top:3px solid var(--pink);}
+  .step:nth-child(3n){border-top:3px solid var(--ink-soft);}
+
+  .cols{display:grid; grid-template-columns:1fr 1fr; gap:44px; align-items:start;}
+  .featurelist{list-style:none; margin-top:8px;}
+  .featurelist li{display:flex; gap:12px; margin-bottom:14px; font-size:16.5px;}
+  .featurelist li b{font-weight:600;}
+  .tick{flex:0 0 22px; height:22px; background:var(--green); color:#fff; font-size:13px; font-weight:700; display:grid; place-items:center; margin-top:2px;}
+
+  .delivery{background:var(--green-soft); border:1.5px solid var(--green); padding:26px 24px;}
+  .delivery h3{font-size:22px; margin-bottom:10px;}
+  .delivery p{font-size:15.5px; color:var(--ink-soft); margin-bottom:10px;}
+  .delivery code{background:var(--card); border:1px solid var(--line); padding:2px 6px; font-size:13.5px;}
+
+  .honesty{max-width:760px;}
+  .honesty p{font-size:17px; color:var(--ink-soft); margin-bottom:14px;}
+  .honesty b{color:var(--ink);}
+
+  .forwho{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .who{background:var(--card); border:1.5px solid var(--line); padding:20px;}
+  .who h3{font-size:18px; margin-bottom:6px;}
+  .who p{font-size:14.5px; color:var(--ink-soft);}
+
+  .banner{background:var(--pink-soft); border-top:1px solid var(--pink); border-bottom:1px solid var(--pink); padding:56px 0;}
+  .banner h2{margin-bottom:10px;}
+  .banner p{color:var(--ink-soft); max-width:60ch; margin-bottom:22px;}
+
+  .privacynote{background:var(--grey); border:1px solid var(--line); padding:18px 20px; font-size:14.5px; color:var(--ink-soft); max-width:820px;}
+
+  footer{padding:46px 0 56px; font-size:14.5px; color:var(--ink-soft);}
+  footer .footrow{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  footer a{color:var(--ink-soft);}
+
+  @media (max-width:880px){
+    nav.main{display:none;}
+    .burger{display:block;}
+    .menu{display:none; border-top:1px solid var(--line); padding:10px 0 18px;}
+    .menu a{display:block; padding:12px 4px; font-size:17px; color:var(--ink); border-bottom:1px solid var(--line);}
+    body.menu-open .menu{display:block;}
+    body.menu-open .burger span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    body.menu-open .burger span:nth-child(2){opacity:0;}
+    body.menu-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    .hero-grid{grid-template-columns:1fr; gap:34px;}
+    .hero-art{justify-self:center; max-width:420px;}
+    .steps, .forwho{grid-template-columns:1fr 1fr;}
+    .cols{grid-template-columns:1fr; gap:34px;}
+    section{padding:56px 0;}
+    .navbar{padding-top:16px; padding-bottom:16px;}
+  }
+  @media (max-width:560px){
+    .steps, .forwho{grid-template-columns:1fr;}
+    .wrap{padding-left:20px; padding-right:20px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap navbar">
+    <a class="brand" href="index.html" aria-label="Lesson Chunks Agent home">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" fill="#2e7d5b"/><rect x="12" y="14" width="40" height="9" fill="#fffdfa"/><rect x="12" y="27" width="30" height="9" fill="#e78fae"/><rect x="12" y="40" width="36" height="9" fill="#fffdfa"/></svg>
+      Lesson Chunks Agent
+    </a>
+    <nav class="main">
+      <a href="#how">How it works</a>
+      <a href="#file">The lesson file</a>
+      <a href="#delivery">Spaced delivery</a>
+      <a href="#ethics">Ethics</a>
+    </nav>
+    <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span></button>
+  </div>
+  <div class="menu" id="menu">
+    <div class="wrap">
+      <a href="#how">How it works</a>
+      <a href="#file">The lesson file</a>
+      <a href="#delivery">Spaced delivery</a>
+      <a href="#ethics">Ethics</a>
+      <a href="hire.html">Need a hand?</a>
+      <a href="https://github.com/boktoday/lesson-chunks-hermes-agent" target="_blank" rel="noopener">Get the agent (GitHub)</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="kicker">Free agent &middot; Local-first</div>
+      <h1>Every lesson, in steps that can be finished.</h1>
+      <p class="lede">A free AI agent for young people who learn better in small pieces. It takes any lesson, document or reading and turns it into chunks: one idea each, plain words, one small task. Then it builds a lesson you can use offline, or drips the chunks into chat before the test.</p>
+      <div class="cta">
+        <a class="btn" href="https://github.com/boktoday/lesson-chunks-hermes-agent" target="_blank" rel="noopener">Get the agent</a>
+        <a class="btn ghost" href="https://boktoday.github.io/lesson-chunks-hermes-agent/demo/lesson.html" target="_blank" rel="noopener">Try a lesson now</a>
+      </div>
+      <div class="freerow"><b>Free for families, schools and churches.</b> Built on Hermes Agent. Runs on your own machine.</div>
+    </div>
+    <div class="hero-art">
+      <svg viewBox="0 0 460 470" role="img" aria-label="A lesson file showing chunk 2 of 5 with an answer box">
+        <defs>
+          <filter id="sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#1c5540" flood-opacity="0.14"/></filter>
+        </defs>
+        <rect x="40" y="26" width="380" height="418" fill="#fffdfa" stroke="#dcdcd2" stroke-width="1.5" filter="url(#sh)"/>
+        <rect x="40" y="26" width="380" height="10" fill="#2e7d5b"/>
+        <text x="64" y="66" font-family="Newsreader, Georgia, serif" font-size="22" font-weight="600" fill="#22251f">Photosynthesis</text>
+        <text x="64" y="86" font-family="Inter, sans-serif" font-size="11.5" fill="#5d635a">Science, Year 8</text>
+        <rect x="64" y="100" width="332" height="7" fill="#e6f2ea"/>
+        <rect x="64" y="100" width="132" height="7" fill="#2e7d5b"/>
+        <text x="64" y="126" font-family="Inter, sans-serif" font-size="11" fill="#5d635a">Chunk 2 of 5</text>
+        <text x="330" y="126" font-family="Inter, sans-serif" font-size="11" fill="#5d635a">about 2 min</text>
+        <text x="64" y="166" font-family="Newsreader, Georgia, serif" font-size="19" font-weight="600" fill="#22251f">The three inputs</text>
+        <text x="64" y="192" font-family="Inter, sans-serif" font-size="13" fill="#22251f">Photosynthesis needs three inputs. Light is</text>
+        <text x="64" y="210" font-family="Inter, sans-serif" font-size="13" fill="#22251f">caught by the leaf. Water is pulled up from</text>
+        <text x="64" y="228" font-family="Inter, sans-serif" font-size="13" fill="#22251f">the roots. Carbon dioxide enters through tiny</text>
+        <text x="64" y="246" font-family="Inter, sans-serif" font-size="13" fill="#22251f">holes called stomata.</text>
+        <rect x="64" y="266" width="332" height="34" fill="#fbe9ef" stroke="#e78fae" stroke-width="1"/>
+        <text x="76" y="288" font-family="Inter, sans-serif" font-size="11.5" fill="#b03d64">Quick recall: where does photosynthesis happen?</text>
+        <text x="64" y="330" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#22251f">Your turn: name the three inputs.</text>
+        <rect x="64" y="342" width="332" height="66" fill="#f3f2ee" stroke="#dcdcd2" stroke-width="1"/>
+        <text x="76" y="366" font-family="Inter, sans-serif" font-size="12" fill="#5d635a">Write your answer here. It saves as you type.</text>
+        <rect x="64" y="422" width="120" height="20" fill="#2e7d5b"/>
+        <text x="74" y="436" font-family="Inter, sans-serif" font-size="10.5" font-weight="600" fill="#fffdfa">READ ALOUD</text>
+        <rect x="196" y="422" width="110" height="20" fill="#fffdfa" stroke="#22251f" stroke-width="1"/>
+        <text x="206" y="436" font-family="Inter, sans-serif" font-size="10.5" font-weight="600" fill="#22251f">TIMER 02:14</text>
+        <rect x="316" y="422" width="80" height="20" fill="#e78fae"/>
+        <text x="326" y="436" font-family="Inter, sans-serif" font-size="10.5" font-weight="700" fill="#fffdfa">FREE</text>
+        <circle cx="64" cy="406" r="0" fill="none"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2>Six moves, one small lesson</h2>
+    <p class="sub">The agent does the patient work of a good learning support aide: read the material, decide the steps, write them kindly, check them, build them, and pace them.</p>
+    <div class="steps">
+      <div class="step"><div class="no">01</div><h3>Ingest</h3><p>Paste text, drop a photo of a page, or hand over a PDF or Word file. The original is kept untouched in the lesson folder.</p></div>
+      <div class="step"><div class="no">02</div><h3>Plan</h3><p>Five to twelve chunks, one idea each, in an order that builds. You see the plan and approve it before anything is written.</p></div>
+      <div class="step"><div class="no">03</div><h3>Write</h3><p>Ninety words maximum per chunk, sentences under fifteen words, one task each, new words defined as they appear.</p></div>
+      <div class="step"><div class="no">04</div><h3>Gate</h3><p>Ten automated checks: length, sentence size, reading level, jargon, tasks, quiz coverage. Nothing shipwrecks on a technicality.</p></div>
+      <div class="step"><div class="no">05</div><h3>Build</h3><p>One self-contained lesson file with navigation, a timer, read-aloud, answer boxes that autosave, and clean printing.</p></div>
+      <div class="step"><div class="no">06</div><h3>Schedule</h3><p>Optionally, the chunks arrive in chat over days, with recall questions, finishing with a five-question sweep before the test.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="file">
+  <div class="wrap cols">
+    <div>
+      <h2>The lesson file is yours forever</h2>
+      <p class="sub">Everything the agent builds is a single HTML file in your own folder. No account, no server, no expiry date. Open it in any browser, send it to the school, print it, or keep it for next year.</p>
+      <ul class="featurelist">
+        <li><span class="tick">&#10003;</span><span><b>Chunk by chunk.</b> Progress, dots, keyboard arrows. One idea on screen at a time.</span></li>
+        <li><span class="tick">&#10003;</span><span><b>Read aloud.</b> The browser's own voice reads each chunk. Works offline, costs nothing.</span></li>
+        <li><span class="tick">&#10003;</span><span><b>A gentle timer.</b> Counts up per chunk, remembers where each one got to.</span></li>
+        <li><span class="tick">&#10003;</span><span><b>Answer boxes that save.</b> Typing is kept in the browser and can be downloaded for the teacher.</span></li>
+        <li><span class="tick">&#10003;</span><span><b>Print ready.</b> Every chunk, every answer, clean lines on paper.</span></li>
+      </ul>
+    </div>
+    <div class="delivery">
+      <h3>No AI key? Still useful.</h3>
+      <p>The repo includes a plain browser chunker: paste a lesson, get it split into ninety-word steps with a timer, read-aloud and answer boxes. It structures, it does not simplify. That is the honest line between no-AI and AI.</p>
+      <p style="margin-top:10px;"><code>templates/chunker.html</code> in the repo. Double click. Works offline.</p>
+      <p style="margin-top:14px;"><a href="https://github.com/boktoday/lesson-chunks-hermes-agent" target="_blank" rel="noopener"><b>See the repo &rarr;</b></a></p>
+    </div>
+  </div>
+</section>
+
+<section id="delivery">
+  <div class="wrap cols">
+    <div>
+      <h2>Knowledge that arrives over days, not all at once</h2>
+      <p class="sub">Cramming the night before is the worst way to keep anything. The agent can schedule the chunks into the young person's chat: one a morning, a quick recall question from an earlier chunk, and a mixed sweep the evening before the test.</p>
+      <ul class="featurelist">
+        <li><span class="tick">&#10003;</span><span><b>Spacing.</b> Chunks spread across days, front-loaded, quiet hours respected.</span></li>
+        <li><span class="tick">&#10003;</span><span><b>Retrieval.</b> The recall line before each new chunk is what actually makes it stick.</span></li>
+        <li><span class="tick">&#10003;</span><span><b>Adaptive.</b> "Don't get it" re-sends that chunk simpler. "Pause" stops everything. "Test moved" re-spaces.</span></li>
+        <li><span class="tick">&#10003;</span><span><b>Answers kept.</b> Replies are saved into the lesson folder as the young person's working record.</span></li>
+      </ul>
+    </div>
+    <div>
+      <div class="delivery">
+        <h3>What a delivery looks like</h3>
+        <p><b>Chunk 3 of 7: Chlorophyll catches light</b></p>
+        <p>Quick recall: name the input that enters through the stomata.</p>
+        <p>Leaves contain a green pigment called chlorophyll. It absorbs mostly red and blue light and reflects green, which is why leaves look green.</p>
+        <p>Do: why do leaves look green? Reply with your answer.</p>
+        <p style="font-size:13px; margin-bottom:0;">No points, no streaks, no guilt. "Done" and "paused" are complete answers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="ethics">
+  <div class="wrap honesty">
+    <h2>It scaffolds. It never does the work.</h2>
+    <p>A blank page gets no AI access. The chunking is access: shorter steps, plainer words, a task that can be started. The thinking, the answers and the marks stay the young person's.</p>
+    <p>Ask it a question and it asks one back first. Ask it to write the essay and it declines, then gets you to the first sentence. Every fact in a chunk traces back to the supplied lesson; if the source is missing something, that becomes a question for the teacher, not an invention.</p>
+    <p><b>No diagnosis, no labels, no promises about outcomes.</b> Just patient structure, repeated.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Built for</h2>
+    <div class="forwho">
+      <div class="who"><h3>Young people</h3><p>Who read the page three times and still cannot start. Chunks make starting possible.</p></div>
+      <div class="who"><h3>Parents</h3><p>Holding school meetings and homework evenings. Same lesson, kinder shape, printed or in chat.</p></div>
+      <div class="who"><h3>Teachers and aides</h3><p>One source text, chunked once, reused for the whole class and for the student who needs smaller steps.</p></div>
+    </div>
+    <div class="privacynote" style="margin-top:26px;">
+      <b>Privacy:</b> the agent runs on your machine. Source documents, answers and the lesson file stay in your folder; nothing is uploaded apart from the model call itself, and a local model makes even that unnecessary. The only thing this website counts is anonymised page views with a cookieless counter. No accounts, no cookies, no tracking pixels.
+    </div>
+  </div>
+</section>
+
+<section class="banner">
+  <div class="wrap">
+    <h2>The agent is free. My time is the paid part.</h2>
+    <p>If you would like the agent set up for a family, a teacher starting next term, or a school that wants every lesson chunked the same way, I can do that with you.</p>
+    <a class="btn" href="hire.html">Need a hand?</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footrow">
+    <div>Lesson Chunks Agent &middot; The AI Champion, ABN 60 118 175 136.<br>Helping young people learn in steps that can be finished.</div>
+    <div style="text-align:right;">
+      <a href="https://github.com/boktoday/lesson-chunks-hermes-agent" target="_blank" rel="noopener">GitHub</a> &middot;
+      <a href="hire.html">Hire</a> &middot;
+      <a href="legal.html">Legal and privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var b = document.getElementById('burger');
+  b.addEventListener('click', function(){
+    var open = document.body.classList.toggle('menu-open');
+    b.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.querySelectorAll('#menu a').forEach(function(a){
+    a.addEventListener('click', function(){
+      document.body.classList.remove('menu-open');
+      b.setAttribute('aria-expanded', 'false');
+    });
+  });
+})();
+</script>
+</body>
+</html>
