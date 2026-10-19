@@ -325,45 +325,53 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
 <script>
-window.addEventListener('DOMContentLoaded', function () {
-  if (!window.gsap || !window.ScrollTrigger) return;
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce) return;
-  gsap.registerPlugin(ScrollTrigger, window.SplitText ? SplitText : undefined);
+(function () {
+  var tries = 0;
+  function init() {
+    if (!window.gsap || !window.ScrollTrigger) {
+      if (++tries < 60) { setTimeout(init, 50); }
+      return;
+    }
+    if (window.__lcMotion) return;
+    window.__lcMotion = true;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    gsap.registerPlugin(ScrollTrigger);
+    if (window.SplitText) gsap.registerPlugin(SplitText);
 
-  // headline: masked line reveal
-  var h1 = document.querySelector('.hero h1');
-  if (h1 && window.SplitText) {
-    try {
-      var split = new SplitText(h1, { type: 'lines' });
-      gsap.set(split.lines, { overflow: 'hidden' });
-      gsap.set(h1, { autoAlpha: 1 });
-      gsap.from(split.lines, { yPercent: 115, duration: .95, ease: 'power3.out', stagger: .13, delay: .05 });
-    } catch (e) { gsap.from(h1, { y: 40, autoAlpha: 0, duration: .8, delay: .05 }); }
-  } else if (h1) {
-    gsap.from(h1, { y: 40, autoAlpha: 0, duration: .8, delay: .05 });
-  }
-  gsap.from('.hero .kicker', { y: 18, autoAlpha: 0, duration: .5, delay: 0 });
-  gsap.from('.hero .lede', { y: 26, autoAlpha: 0, duration: .65, delay: .35 });
-  gsap.from('.hero .cta .btn', { y: 18, autoAlpha: 0, duration: .5, stagger: .1, delay: .5 });
-  gsap.from('.hero .freerow', { y: 14, autoAlpha: 0, duration: .5, delay: .7 });
-  gsap.from('.hero-art', { x: 46, rotate: 1.6, autoAlpha: 0, duration: 1, ease: 'power3.out', delay: .25 });
-  gsap.to('.hero-art', { yPercent: -7, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+    var h1 = document.querySelector('.hero h1');
+    if (h1 && window.SplitText) {
+      try {
+        var split = new SplitText(h1, { type: 'lines' });
+        gsap.set(split.lines, { overflow: 'hidden' });
+        gsap.from(split.lines, { yPercent: 115, duration: .95, ease: 'power3.out', stagger: .13, delay: .05 });
+      } catch (e) { gsap.from(h1, { y: 40, autoAlpha: 0, duration: .8 }); }
+    } else if (h1) {
+      gsap.from(h1, { y: 40, autoAlpha: 0, duration: .8 });
+    }
+    gsap.from('.hero .kicker', { y: 18, autoAlpha: 0, duration: .5 });
+    gsap.from('.hero .lede', { y: 26, autoAlpha: 0, duration: .65, delay: .35 });
+    gsap.from('.hero .cta .btn', { y: 18, autoAlpha: 0, duration: .5, stagger: .1, delay: .5 });
+    gsap.from('.hero .freerow', { y: 14, autoAlpha: 0, duration: .5, delay: .7 });
+    gsap.from('.hero-art', { x: 46, rotate: 1.6, autoAlpha: 0, duration: 1, ease: 'power3.out', delay: .25 });
+    gsap.to('.hero-art', { yPercent: -7, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
 
-  function reveal(sel, trigger, stagger) {
-    var els = document.querySelectorAll(sel);
-    if (!els.length || !document.querySelector(trigger)) return;
-    gsap.from(els, { y: 44, autoAlpha: 0, duration: .7, stagger: stagger || .12, ease: 'power3.out',
-      scrollTrigger: { trigger: trigger, start: 'top 80%', once: true } });
+    function reveal(sel, trigger, stagger) {
+      var els = document.querySelectorAll(sel);
+      if (!els.length || !document.querySelector(trigger)) return;
+      gsap.from(els, { y: 44, autoAlpha: 0, duration: .7, stagger: stagger || .12, ease: 'power3.out',
+        scrollTrigger: { trigger: trigger, start: 'top 80%', once: true } });
+    }
+    reveal('.steps .step', '.steps', .12);
+    reveal('.forwho .who', '.forwho', .1);
+    reveal('.featurelist li', '.featurelist', .07);
+    reveal('.banner .wrap > *', '.banner', .12);
+    document.querySelectorAll('section h2').forEach(function (h) {
+      gsap.from(h, { y: 34, autoAlpha: 0, duration: .7, ease: 'power3.out',
+        scrollTrigger: { trigger: h, start: 'top 82%', once: true } });
+    });
   }
-  reveal('.steps .step', '.steps', .12);
-  reveal('.forwho .who', '.forwho', .1);
-  reveal('.featurelist li', '.featurelist', .07);
-  reveal('.banner .wrap > *', '.banner', .12);
-  document.querySelectorAll('section h2').forEach(function (h) {
-    gsap.from(h, { y: 34, autoAlpha: 0, duration: .7, ease: 'power3.out',
-      scrollTrigger: { trigger: h, start: 'top 82%', once: true } });
-  });
-});
+  init();
+})();
+</script>
 </body>
 </html>
